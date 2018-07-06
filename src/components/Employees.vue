@@ -3,6 +3,7 @@
   <h3>Add Employee</h3>
 
   <h3>Employees</h3>
+  <!-- TODO: Fetch from csv and put into employee.x -->
     <div
     v-for="employee in sortedEmployees"
     v-bind:key="employee.id"
@@ -13,17 +14,22 @@
     <table style="margin: 0 auto;">
       <tbody>
         <tr>
-          <td>{{employee.id}}</td>
-          <td>{{employee.name}}</td>
-          <td>{{employee.totalhours}}</td>
-          <td>{{employee.type}}</td>
+          <td>
+            Name:<br>
+            {{employee.name}}</td>
+          <td>
+            Hours:<br>
+          {{employee.totalhours}}</td>
+          <td>
+            Type:<br>
+          {{employee.type}}</td>
         </tr>
       </tbody>
     </table>
     </div>
 
   </div>
-
+    <button type="button" class="btn btn-default">Import CSV</button>
 </div>
 </template>
 
