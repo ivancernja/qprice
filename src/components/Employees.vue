@@ -76,7 +76,10 @@
 
 <script>
     import db from '@/db'
-    import {upload} from '@/file-upload.service';
+    // Fake service
+    import {upload} from '@/file-upload.fake.service';
+    // Real service
+    // import {upload} from '@/file-upload.service'
 
     const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
     
@@ -89,7 +92,7 @@
           uploadedFiles: [],
           uploadError: null,
           currentStatus: null,
-          uploadFieldName: 'export'
+          uploadFieldName: 'photos'
         }
       },
       computed: {
@@ -104,7 +107,7 @@
         isSaving() {
           return this.currentStatus == STATUS_SAVING;
         },
-        isSucess() {
+        isSuccess() {
           return this.currentStatus == STATUS_SUCCESS;
         },
         isFailed() {
