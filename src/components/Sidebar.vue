@@ -1,6 +1,7 @@
 <template>
 	<div class="sidebar-component">
 		<div class="sidebar">
+			<a href="#"><img src="https://q-software.com/wp-content/uploads/2017/10/logo-white1.png" style="width: 200px; margin-bottom: 40px; margin-left: -80px; margin-top: -20px"/></a>
 			<ul class="project-list">
 				<li class="single-project-item">
 					<a href="#">3A Company website</a>
@@ -44,7 +45,7 @@
     	position: absolute;
     	left: 0;
     	width: 300px;
-    	background-color: darkgray;
+    	margin-top: 30px;
     }
 
     .project-list {
@@ -56,22 +57,29 @@
 	   	display:inline-block;
 	    width:100%;
 	    height:50px;
-	    background-color: darkgray;
 	    color: #000;
 	    text-decoration: none;
     }
 
     .single-project-item a:hover {
-    	background-color: lightgray;
+    	color: #03FF34;
     }
 
     .update-project-items {
     	position: absolute;
-    	display: inline;
+    	display: flex;
     	left: 0;
     	bottom: 0;
     	list-style-type: none;
-    	font-size: 20px;
+    	font-size: 40px;
+    }
+
+    .update-project-items li a:hover {
+    	color: #03FF34;
+    }
+
+    .update-project-items li {
+    	margin-right: 20px;
     }
 
 </style>

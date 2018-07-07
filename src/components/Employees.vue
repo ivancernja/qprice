@@ -1,6 +1,12 @@
 <template>
 <div>
-  <h3>Add Employee</h3>
+
+    <xls-csv-parser style="width: 30%; margin: 0 auto;" :columns="columns" @on-validate="onValidate" lang="en"></xls-csv-parser>
+    <br><br>
+    <div class="results" v-if="results">
+      <h3>Results:</h3>
+      <pre>{{ JSON.stringify(results, null, 2) }}</pre>
+    </div>
 
   <h3>Employees</h3>
   <!-- TODO: Fetch from csv and put into employee.x -->
@@ -37,37 +43,27 @@
       </tbody>
     </table>
 
-    <xls-csv-parser :columns="columns" @on-validate="onValidate" :help="help" lang="en"></xls-csv-parser>
-    <br><br>
-    <div class="results" v-if="results">
-      <h3>Results:</h3>
-      <pre>{{ JSON.stringify(results, null, 2) }}</pre>
-    </div>
-
-
 </div>
 </template>
 
 <script>
     import db from '@/db'
-    import { XlsCsvParser } from 'vue-xls-csv-parser'    
+    import { XlsCsvParser } from 'vue-xls-csv-parser';
 
     export default {
       name: 'Employees',
       components: {
-        XlsCsvParser,
+      XlsCsvParser,
       },
       data() {
         return {
           employees: [],
           columns: [
-          { name: 'Student login', value: 'login' },
-          { name: 'Student firstname', value: 'firstname' },
-          { name: 'Student lastname', value: 'lastname' },
-          { name: 'Other', value: 'other', isOptional: true },
+          { name: 'Who', value: 'name', isOptional: true },
+          { name: 'Total hours', value: 'totalhours', isOptional: true },
+          { name: 'Type', value: 'type', isOptional: true},
           ],
-          results: null,
-          help: 'Necessary columns are: login, firstname and lastname',
+        results: null,
         }
       },
       computed: {
@@ -77,19 +73,19 @@
           })
         }
       },
+      methods: {
+      onValidate(results) {
+        this.results = results;
+      },
+    },
       created() {
         db.collection('employees').get().then(querySnapshot => {
           querySnapshot.forEach(doc => {
             this.employees.push(doc.data())
           })
         })
-      },
-      methods: {
-      onValidate(results) {
-        this.results = results;
       }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -99,5 +95,8 @@
       font-weight: normal;
     }
 
+    .results {
+      widht: 500px;
+    }
 
 </style>
