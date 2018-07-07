@@ -37,62 +37,37 @@
       </tbody>
     </table>
 
-<!-- Enter name; Enter hours; Dropdown type -->
-    
-    <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
-        <h1>Upload CSV</h1>
-        <button type="button" class="btn btn-dark" v-on:click="fileUpload">Upload</button>
-          <input :ref="'inputField'" type="file" multiple :name="uploadFieldName" :disabled="isSaving" @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length" accept="image/*" class="input-file" hidden>
-            <p v-if="isInitial">
-              Upload TW CSV
-            </p>
-            <p v-if="isSaving">
-              Uploading {{ fileCount }} files...
-            </p>
-  
-      </form>
-       <div v-if="isSuccess">
-        <h2>Uploaded {{ uploadedFiles.length }} file(s) successfully.</h2>
-        <p>
-          <a href="javascript:void(0)" @click="reset()">Upload again</a>
-        </p>
-        <ul class="list-unstyled">
-          <li v-for="item in uploadedFiles">
-            <img :src="item.url" class="img-responsive img-thumbnail" :alt="item.originalName">
-          </li>
-        </ul>
-      </div>
-      <!--FAILED-->
-      <div v-if="isFailed">
-        <h2>Upload failed.</h2>
-        <p>
-          <a href="javascript:void(0)" @click="reset()">Try again</a>
-        </p>
-        <pre>{{ uploadError }}</pre>
-      </div>
+    <xls-csv-parser :columns="columns" @on-validate="onValidate" :help="help" lang="en"></xls-csv-parser>
+    <br><br>
+    <div class="results" v-if="results">
+      <h3>Results:</h3>
+      <pre>{{ JSON.stringify(results, null, 2) }}</pre>
     </div>
+
+
 </div>
 </template>
 
 <script>
     import db from '@/db'
-    // Fake service
-    import {upload} from '@/file-upload.fake.service';
-    // Real service
-    // import {upload} from '@/file-upload.service'
-
-    const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
-    
+    import { XlsCsvParser } from 'vue-xls-csv-parser'    
 
     export default {
       name: 'Employees',
+      components: {
+        XlsCsvParser,
+      },
       data() {
         return {
           employees: [],
-          uploadedFiles: [],
-          uploadError: null,
-          currentStatus: null,
-          uploadFieldName: 'photos'
+          columns: [
+          { name: 'Student login', value: 'login' },
+          { name: 'Student firstname', value: 'firstname' },
+          { name: 'Student lastname', value: 'lastname' },
+          { name: 'Other', value: 'other', isOptional: true },
+          ],
+          results: null,
+          help: 'Necessary columns are: login, firstname and lastname',
         }
       },
       computed: {
@@ -100,18 +75,6 @@
           return this.employees.slice().sort((a, b) => {
             return a.id - b.id
           })
-        },
-        isInitial() {
-        return this.currentStatus == STATUS_INITIAL;
-        },
-        isSaving() {
-          return this.currentStatus == STATUS_SAVING;
-        },
-        isSuccess() {
-          return this.currentStatus == STATUS_SUCCESS;
-        },
-        isFailed() {
-          return this.currentStatus == STATUS_FAILED;
         }
       },
       created() {
@@ -122,53 +85,19 @@
         })
       },
       methods: {
-      reset() {
-        // reset form
-        this.currentStatus = STATUS_INITIAL;
-        this.uploadedFiles = [];
-        this.uploadError = null;
-      },
-      save(formData) {
-        // upload data to the server
-        this.currentStatus = STATUS_SAVING;
-
-        upload(formData)
-          .then(x => {
-            this.uploadedFiles = [].concat(x);
-            this.currentStatus = STATUS_SUCCESS;
-          })
-          .catch(err => {
-            this.uploadError = err.response;
-            this.currentStatus = STATUS_FAILED
-          });
-      },
-      filesChange(fieldName, fileList) {
-        const formData = new FormData();
-
-        if (!fileList.length) return;
-
-        Array
-          .from(Array(fileList.length).keys())
-          .map(x => {
-            formData.append(fieldName, fileList[x], fileList[x].name);
-          });
-
-        this.save(formData);
-      },
-      fileUpload() {
-      this.$refs.inputField.click()
-    }
-    },
-    mounted() {
-      this.reset();
-    },
-  };
+      onValidate(results) {
+        this.results = results;
+      }
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+/* Transfer to SASS*/
     h1, h2 {
       font-weight: normal;
     }
+
 
 </style>
