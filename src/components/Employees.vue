@@ -1,12 +1,8 @@
 <template>
 <div>
 
-    <xls-csv-parser style="width: 30%; margin: 0 auto;" :columns="columns" @on-validate="onValidate" lang="en"></xls-csv-parser>
-    <br><br>
-    <div class="results" v-if="results">
-      <h3>Results:</h3>
-      <pre>{{ JSON.stringify(results, null, 2) }}</pre>
-    </div>
+  <button class=" btn btn-default " v-on:click="parser">
+  </button>
 
   <h3>Employees</h3>
   <!-- TODO: Fetch from csv and put into employee.x -->
@@ -48,22 +44,16 @@
 
 <script>
     import db from '@/db'
-    import { XlsCsvParser } from 'vue-xls-csv-parser';
+    const myCsv = require('@/test.json')
+    const myObjStr = JSON.stringify(myCsv);
+    // https://www.npmjs.com/package/csvtojson - csvFilePath
+    const csvFilePath='<path to csv file>'
 
     export default {
       name: 'Employees',
-      components: {
-      XlsCsvParser,
-      },
       data() {
         return {
           employees: [],
-          columns: [
-          { name: 'Who', value: 'name', isOptional: true },
-          { name: 'Total hours', value: 'totalhours', isOptional: true },
-          { name: 'Type', value: 'type', isOptional: true},
-          ],
-        results: null,
         }
       },
       computed: {
@@ -74,10 +64,10 @@
         }
       },
       methods: {
-      onValidate(results) {
-        this.results = results;
+        parser: function() {
+          console.log(myObjStr)
+        }
       },
-    },
       created() {
         db.collection('employees').get().then(querySnapshot => {
           querySnapshot.forEach(doc => {
